@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1584714531024
+Build-Jdk: 1.8.0_91
+Built-By: formacion
+Bundle-Category: dto
+Bundle-Description: Se especifican entradas y salidas de la aplicacion
+Bundle-ManifestVersion: 2
+Bundle-Name: UBICC001
+Bundle-SymbolicName: UBICC001-0.0.0
+Bundle-Version: 0.0.0
+Created-By: Apache Maven Bundle Plugin
+Export-Package: com.bbva.ubic.dto.ubicator;uses:="com.bbva.apx.dto";vers
+ ion="0.0.0"
+Import-Package: com.bbva.apx.dto;version="[1.0,2)"
+Tool: Bnd-1.50.0

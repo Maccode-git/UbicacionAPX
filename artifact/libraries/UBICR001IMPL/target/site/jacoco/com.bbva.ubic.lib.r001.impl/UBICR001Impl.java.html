@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UBICR001Impl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">UBICR001IMPL</a> &gt; <a href="index.source.html" class="el_package">com.bbva.ubic.lib.r001.impl</a> &gt; <span class="el_source">UBICR001Impl.java</span></div><h1>UBICR001Impl.java</h1><pre class="source lang-java linenums">package com.bbva.ubic.lib.r001.impl;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.RestTemplate;
+
+import com.bbva.ubic.dto.ubicator.DataOutUbiDTO;
+import com.bbva.ubic.lib.r001.UBICR001;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+<span class="fc" id="L13">public class UBICR001Impl extends UBICR001Abstract {</span>
+
+<span class="fc" id="L15">	private static final Logger LOGGER = LoggerFactory.getLogger(UBICR001.class);</span>
+
+	/* (non-Javadoc)
+	 * @see com.bbva.ubic.lib.r001.UBICR001#execute(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public DataOutUbiDTO execute(String origen, String destino) {
+<span class="fc" id="L22">		DataOutUbiDTO out = new DataOutUbiDTO();</span>
+<span class="fc" id="L23">		LOGGER.info(&quot;Starting execute&quot;);</span>
+		try {
+<span class="fc" id="L25">			RestTemplate restTemplate = new RestTemplate();</span>
+<span class="fc" id="L26">			String json = restTemplate.getForObject(&quot;https://maps.googleapis.com/maps/api/directions/json?origin=&quot; + origen + &quot;&amp;destination=&quot; + destino + &quot;&amp;key=AIzaSyByPeqwGB3sb1BXGhEkzfzmnOodqugTM6Q&quot;, String.class);</span>
+			
+<span class="fc" id="L28">			ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L29">			JsonNode jsonTotal = objectMapper.readValue(json, JsonNode.class);</span>
+			
+<span class="fc" id="L31">			JsonNode jsonInfo = jsonTotal.get(&quot;routes&quot;).get(0).get(&quot;legs&quot;).get(0);</span>
+<span class="fc" id="L32">			out.setDistancia(jsonInfo.get(&quot;distance&quot;).get(&quot;text&quot;).toString());</span>
+<span class="fc" id="L33">			out.setTiempoDemora(jsonInfo.get(&quot;duration&quot;).get(&quot;text&quot;).toString());</span>
+<span class="fc" id="L34">			out.setValorKm(1.5F);</span>
+<span class="fc" id="L35">			out.setCosto((jsonInfo.get(&quot;distance&quot;).get(&quot;value&quot;).asInt()/1000)*out.getValorKm());</span>
+			
+<span class="fc" id="L37">		} catch (Exception e) {</span>
+<span class="fc" id="L38">			return null;</span>
+<span class="fc" id="L39">		}</span>
+<span class="fc" id="L40">		LOGGER.info(&quot;Finaly execute&quot;);</span>
+<span class="fc" id="L41">		return out;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
